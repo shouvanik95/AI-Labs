@@ -15,7 +15,9 @@ mysqrt(X,Y,Ans) :-
     Y2 is Y+1,
     mysqrt(X,Y2,Ans).
 
+isPrime(2).
 isPrime(X) :-
+    X > 1,
     mysqrt(X,0,X1),
     findall(N, between(2,X1,N), L),
     nofactor(X,L),
@@ -45,10 +47,11 @@ primeList(N,List) :-N>2,not(isPrime(N)),!,N1 is N-1,primeList(N1,List).
 /* Above code generates primes */
 /* The problem specific code is below */
 
-triplets([],[],[],Primes).
+triplets([],_,[],Primes).
 triplets([B|Bs],[],List,Primes) :-
     triplets(Bs,Primes,List,Primes).
 triplets([B|Bs],[C|Cs],[[A,B,C]|T],Primes) :-
+    C > B,
     A1 is B*B + 2*B -C,
     A2 is C+1,
     0 is A1 mod A2,
@@ -56,6 +59,7 @@ triplets([B|Bs],[C|Cs],[[A,B,C]|T],Primes) :-
     isPrime(A),
     triplets([B|Bs],Cs,T,Primes).
 triplets([B|Bs],[C|Cs],T,Primes) :-
+    C > B,
     A1 is B*B + 2*B -C,
     A2 is C+1,
     0 is A1 mod A2,
@@ -63,14 +67,17 @@ triplets([B|Bs],[C|Cs],T,Primes) :-
     not(isPrime(A)),
     triplets([B|Bs],Cs,T,Primes).
 triplets([B|Bs],[C|Cs],T,Primes) :-
-    A1 is B*B + 2*B -C,
-    A2 is C+1,
-    not(0 is A1 mod A2),
-    A is A1 / A2,
-    isPrime(A),
     triplets([B|Bs],Cs,T,Primes).
+
+addtriplets([],0).
+addtriplets([[A,B,C]|T],Ans) :-
+    addtriplets(T,Ans1),
+    S1 is A + B + C,
+    Ans is Ans1 + S1.
 
 tripletSum(N,Ans) :-
     primeList(N,Primes),
     reverse(Primes,Pr),
-    triplets(Pr,Pr,Ans,Pr).
+    triplets(Pr,Pr,Ans1,Pr),
+    addtriplets(Ans1,Ans).
+

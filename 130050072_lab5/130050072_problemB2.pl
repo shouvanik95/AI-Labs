@@ -26,6 +26,7 @@ c1(N,X,X1) :- X < N, X1 is X + 1.
 c2(N,X,X1) :- X > 2, X1 is X - 2.
 c2(N,X,X1) :- N1 is N - 1, X < N1, X1 is X + 2.
 
+%utility functions.
 nmoves(N, Pos,Visited,Ans) :-
     findall(Next,ktmove(N,Pos,Next), Cands),
     newMoves(Visited,Cands,Poss),
@@ -43,6 +44,7 @@ minmoves(N,[H,K|T],Visited,Min) :-
     H1 >= K1,
     minmoves(N,[K|T],Visited,Min).
 
+% traverse options in order of heuristic.
 checkWalk(N,List,Path,Len,Ans):-
     minmoves(N,List,Path,Min),
     delete(List,Min,L1),
